@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Christian David Frey – Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root {
+      --panel:#171719;
+      --panel-2:#1d1d20;
+      --line:rgba(255,255,255,.1);
+      --accent:#d7d1bf;
+      --shadow:0 24px 80px rgba(0,0,0,.35);
+      --radius:22px;
+      --max:1180px;
+      --card-height:auto;
+    }
+
+    body.drag-active{
+      user-select:none;
+      cursor:grabbing;
+    }
+
+    .portfolio-hero{
+      padding:80px 0 40px;
+    }
+
+    .portfolio-hero h1{
+      font-size:clamp(2.4rem,5vw,4.5rem);
+      letter-spacing:-.04em;
+      margin:0 0 16px;
+    }
+
+    .portfolio-intro{
+      max-width:720px;
+      color:#bdbdbd;
+      line-height:1.8;
+    }
+
+    .stack-section{
+      padding:20px 0 30px;
+    }
+
+    .stack-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      margin-bottom:18px;
+      gap:20px;
+    }
+
+    .stack-header h2{
+      margin:0;
+      font-size:clamp(1.6rem,2.5vw,2.2rem);
+    }
+
+    .interaction-note{
+      color:#9c9c9c;
+      font-size:.92rem;
+      line-height:1.6;
+      margin:0 0 18px;
+    }
+
+    .note-swipe{
+      display:none;
+    }
+
+    .stack-ui{
+      position:relative;
+      min-height:700px;
+      perspective:1600px;
+      touch-action:pan-y;
+      cursor:grab;
+      overflow:hidden;
+      padding-bottom:30px;
+    }
+
+    .stack-layer{
+      position:absolute;
+      inset:0;
+      display:grid;
+      justify-items:center;
+      align-items:start;
+      padding:8px 6px 0;
+    }
+
+    .project-card{
+      position:relative;
+      isolation:isolate;
+      width:min(920px,100%);
+      min-height:520px;
+      height:var(--card-height, auto);
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background:linear-gradient(135deg,var(--panel) 0%,var(--panel-2) 100%);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      transition:transform .42s ease, opacity .32s ease;
+      will-change:transform, opacity;
+    }
+
+    .project-card.dragging{
+      transition:none !important;
+    }
+
+    .project-card.has-bg::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:var(--card-bg);
+      background-size:cover;
+      background-position:center;
+      filter:grayscale(100%) blur(10px) brightness(.95);
+      transform:scale(1.05);
+      opacity:.75;
+      z-index:0;
+    }
+
+    .project-card.has-bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        135deg,
+        rgba(23,23,25,.55) 0%,
+        rgba(29,29,32,.65) 100%
+      );
+      z-index:1;
+    }
+
+    .card-main,
+    .card-side{
+      position:relative;
+      z-index:2;
+    }
+
+    .card-main{
+      padding:34px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .card-side{
+      border-left:1px solid var(--line);
+      padding:30px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:18px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .card-kicker{
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-size:.8rem;
+    }
+
+    .card-title{
+      margin:10px 0 14px;
+      font-size:clamp(2rem,4vw,2.8rem);
+      line-height:.95;
+      letter-spacing:-.04em;
+      overflow-wrap:break-word;
+      word-break:normal;
+      hyphens:auto;
+    }
+
+    .card-text{
+      color:#cfcfcf;
+      line-height:1.8;
+      max-width:52ch;
+      margin:0;
+      overflow-wrap:break-word;
+      word-break:normal;
+      hyphens:auto;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .tag{
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      font-size:.85rem;
+      background:rgba(255,255,255,.03);
+    }
+
+    .metric-label{
+      color:#bdbdbd;
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+
+    .metric-value{
+      font-size:2rem;
+      letter-spacing:-.03em;
+    }
+
+    .metric-list{
+      margin:0;
+      padding-left:18px;
+      font-size:1rem;
+      line-height:1.7;
+      letter-spacing:0;
+    }
+
+    .links{
+      margin-top:20px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.9rem;
+      text-decoration:none;
+      color:inherit;
+      background:rgba(255,255,255,.03);
+    }
+
+    .btn.primary{
+      background:#f1f0ea;
+      color:#111;
+      border:none;
+    }
+
+    .controls{
+      margin-top:30px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+    }
+
+    .control{
+      width:46px;
+      height:46px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:transparent;
+      color:white;
+      cursor:pointer;
+      font-size:1.1rem;
+    }
+
+    .skills{
+      padding:10px 0 100px;
+    }
+
+    .skills-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .skill-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:22px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .skill-card h3{
+      margin:0 0 12px;
+      font-size:1rem;
+    }
+
+    .skill-card p{
+      margin:0;
+      color:#bdbdbd;
+      line-height:1.75;
+    }
+
+    .stack-layer[data-pos="0"] .project-card{opacity:1;transform:translateY(0) scale(1);z-index:4}
+    .stack-layer[data-pos="1"] .project-card{opacity:.75;transform:translateY(20px) scale(.97);z-index:3}
+    .stack-layer[data-pos="2"] .project-card{opacity:.5;transform:translateY(40px) scale(.94);z-index:2}
+    .stack-layer[data-pos="3"] .project-card{opacity:.3;transform:translateY(55px) scale(.9);z-index:1}
+
+    .drag-demo{
+      animation:dragDemo 1.15s ease;
+    }
+
+    @keyframes dragDemo{
+      0%{transform:translateX(0)}
+      35%{transform:translateX(-54px)}
+      68%{transform:translateX(10px)}
+      100%{transform:translateX(0)}
+    }
+
+    @media (pointer: coarse){
+      .note-drag{
+        display:none;
+      }
+      .note-swipe{
+        display:inline;
+      }
+      .stack-ui{
+        cursor:default;
+      }
+    }
+
+    @media (max-width: 900px){
+      .project-card{
+        grid-template-columns:1fr;
+        min-height:auto;
+      }
+
+      .card-main{
+        padding:24px 22px 20px;
+      }
+
+      .card-side{
+        border-left:none;
+        border-top:1px solid var(--line);
+        padding:20px 22px 24px;
+      }
+
+      .skills-grid{
+        grid-template-columns:1fr;
+      }
+
+      .stack-ui{
+        min-height:840px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .portfolio-hero{
+        padding:56px 0 28px;
+      }
+
+      .stack-header{
+        flex-direction:column;
+        align-items:flex-start;
+        margin-bottom:10px;
+      }
+
+      .stack-ui{
+        min-height:1040px;
+        perspective:none;
+        padding-bottom:36px;
+      }
+
+      .stack-layer{
+        padding:8px 0 0;
+      }
+
+      .project-card{
+        width:100%;
+        min-height:auto;
+        border-radius:18px;
+      }
+
+      .card-main{
+        padding:22px 20px 18px;
+      }
+
+      .card-side{
+        padding:18px 20px 22px;
+      }
+
+      .card-title{
+        font-size:1.7rem;
+        line-height:1.02;
+      }
+
+      .card-text{
+        font-size:.98rem;
+        line-height:1.7;
+        max-width:none;
+      }
+
+      .tags{
+        gap:8px;
+      }
+
+      .tag{
+        font-size:.8rem;
+        padding:7px 11px;
+      }
+
+      .links{
+        gap:10px;
+      }
+
+      .btn{
+        width:100%;
+      }
+
+      .controls{
+        margin-top:22px;
+      }
+
+      .control{
+        width:42px;
+        height:42px;
+      }
+
+      .metric-value{
+        font-size:1.2rem;
+        line-height:1.4;
+      }
+
+      .metric-list{
+        font-size:.98rem;
+        line-height:1.65;
+      }
+
+      .stack-layer[data-pos="0"] .project-card{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+
+      .stack-layer[data-pos="1"] .project-card{
+        opacity:.16;
+        transform:translateY(10px) scale(.985);
+      }
+
+      .stack-layer[data-pos="2"] .project-card,
+      .stack-layer[data-pos="3"] .project-card{
+        opacity:0;
+        transform:translateY(12px) scale(.98);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="discover-overlay" id="discoverOverlay" aria-hidden="true">
+    <div class="discover-panel">
+      <div class="discover-top">
+        <button class="discover-close" aria-label="Navigation schliessen">
+          <span>Schliessen</span>
+        </button>
+      </div>
+
+      <div class="discover-links">
+        <a class="active" href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="about.html">Über mich</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <div class="brand">
+          <a class="logo" href="index.html">Christian David Frey</a>
+          <div class="brand-sub">Data · Analysis · Visual Storytelling</div>
+        </div>
+
+        <button class="discover-toggle" aria-label="Navigation öffnen" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+          </svg>
+          <span>Entdecken</span>
+        </button>
+
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="news.html">News</a>
+          <a class="active" href="portfolio.html">Portfolio</a>
+          <a href="about.html">Über mich</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="portfolio-hero">
+      <h1>Portfolio</h1>
+      <p class="portfolio-intro">
+        Hier finden Sie ausgewählte Projekte aus den Bereichen Datenanalyse, Web Scraping, politikwissenschaftliche Forschung und visuelles Storytelling. Weiter unten sind zudem Fähigkeiten aufgeführt, die ich im Studium und im Berufsalltag erworben habe.
+      </p>
+    </section>
+
+    <section class="stack-section">
+      <div class="stack-header"></div>
+
+      <p class="interaction-note">
+        <span class="note-drag">Ziehen Sie die Karten mit gedrückter Maustaste oder nutzen Sie die Pfeile darunter, um durch die Arbeitsproben zu navigieren.</span>
+        <span class="note-swipe">Swipen Sie durch die Arbeitsproben oder nutzen Sie die Pfeile darunter.</span>
+      </p>
+
+      <div class="stack-ui" id="stack"></div>
+
+      <div class="controls">
+        <button class="control" id="prev" aria-label="Vorherige Karte">←</button>
+        <button class="control" id="next" aria-label="Nächste Karte">→</button>
+      </div>
+    </section>
+
+
+
+    <div style="margin-top:56px;"></div>
+
+    <section class="skills">
+      <div class="stack-header">
+        <h2>Fähigkeiten</h2>
+        <p style="color:#bdbdbd">Überblick über zentrale Fähigkeiten aus Studium und Berufsalltag.</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <h3>Datenanalyse</h3>
+          <p>Scraping, Datenaufbereitung, explorative Analyse, Text Mining und Mustererkennung in grossen Datensätzen.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Datenjournalismus</h3>
+          <p>Übersetzung komplexer Daten in verständliche Geschichten mit klarer Struktur und visueller Darstellung.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Web & Visualisierung</h3>
+          <p>HTML, CSS, JavaScript, Worpress, interaktive Darstellungen und Gestaltung von datengetriebenen Webseiten.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Foto-, Audio- und Videobearbeitung</h3>
+          <p>Bild-, Audio- und Videoschnitt mit Photoshop, InDesign, Premiere Pro und Logic Pro.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Administration & Office</h3>
+          <p>Sehr gute Kenntnisse in Microsoft Office, insbesondere Excel, Word und PowerPoint, für Datenorganisation, Tabellenanalyse, Dokumentation und Präsentationen.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Politikwissenschaftliche Forschung</h3>
+          <p>Erfahrung in quantitativer Analyse, Forschungsdesign, Themenstrukturierung und der verständlichen Aufbereitung politischer Zusammenhänge.</p>
+        </div>
+      </div>
+    </section>
+
+    <div style="margin-top:26px;"></div>
+
+    <section class="skills about-softskills">
+      <div class="stack-header">
+        <h2>Arbeitsweise & Soft Skills</h2>
+        <p style="color:#bdbdbd">Eigenschaften, die meine Arbeit im Studium und im Berufsalltag prägen.</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <h3>Analytisches Denken</h3>
+          <p>Komplexe Zusammenhänge strukturiert erfassen, Daten einordnen und daraus verständliche Schlüsse ableiten.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Strukturierte Arbeitsweise</h3>
+          <p>Projekte plane ich sorgfältig und setze sie mit einem klaren Blick für Aufbau, Details und Nachvollziehbarkeit um.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Verständliche Vermittlung</h3>
+          <p>Ich lege Wert darauf, komplexe Inhalte klar, präzise und visuell ansprechend aufzubereiten.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Eigeninitiative</h3>
+          <p>Ich arbeite mich gerne selbstständig in neue Themen, Datensätze und Werkzeuge ein und entwickle Lösungen eigenständig weiter.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Zuverlässigkeit</h3>
+          <p>Sorgfalt, Verbindlichkeit und ein konsistenter Qualitätsanspruch sind für mich zentrale Bestandteile guter Arbeit.</p>
+        </div>
+
+        <div class="skill-card">
+          <h3>Zusammenarbeit</h3>
+          <p>Ich arbeite gerne im Austausch mit anderen, nehme Feedback ernst und bringe meine Perspektive konstruktiv im Team ein.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer site-footer-home">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span>© 2026 Christian David Frey</span>
+        <a href="mailto:ch.frey@live.de">ch.frey@live.de</a>
+      </div>
+
+      <span class="social">
+        <a href="https://www.instagram.com/dave.iniert" target="_blank" rel="noopener" aria-label="Instagram Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5zm4.25 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm4.75-3a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/>
+          </svg>
+        </a>
+
+        <a href="https://www.linkedin.com/in/christian-david-frey-68b29237b/" target="_blank" rel="noopener" aria-label="LinkedIn Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20.45 20.45h-3.55v-5.56c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.65H7.32V9h3.41v1.56h.05c.47-.9 1.62-1.85 3.33-1.85 3.56 0 4.21 2.34 4.21 5.38v6.36zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/>
+          </svg>
+        </a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    const projects = [
+      {
+        kicker:'Forschung',
+        title:'Finanzielle Unzufriedenheit und die Wahl der Schweizerischen Volkspartei ',
+        text:'Dieses Working Paper ist im Rahmen meiner Masterarbeit (Note 6.0) entstanden und wird derzeit überarbeitet. Die Analyse zeigt, dass finanzielle Unzufriedenheit über klassische Themen des Rechtspopulismus die Wahl der SVP begünstigt.',
+        tags:['Politik','Populismus','Wahlforschung','Schweiz', 'Quantitative Analyse'],
+        metricLabel:'Tools',
+        metricValue:['R Studio','ggplot2','Quarto','tidyverse', 'lavaan'],
+        primary:'Zum Paper',
+        secondary:'',
+        link:'pdf/workingpaper.pdf',
+        bgImage:'images/paper.png'
+      },
+      {
+        kicker:'Datenjournalismus',
+        title:'Analyse von Newsartikeln',
+        text:'Im Rahmen meiner Anstellung am Forschungszentrum Öffentlichkeit und Gesellschaft der Universität Zürich habe ich für verschiedene quantitative Medienanalysen einzelne Newsportale gescraped. Häufig sammelte ich die publizierten Artikel eines gesamten Jahres, teilweise erfasste ich auch komplette Kommentarspalten. Im Rahmen einzelner Stories habe ich diese Datensätze zusätzlich ausgewertet.',
+        tags:['Scraping','News','Datensatz'],
+        metricLabel:'Tools',
+        metricValue:['R Studio','ggplot2', 'plotly', 'HTML', 'JavaScript'],
+        primary:'Was macht eigentlich watson?',
+        secondary:'Die Stimmen unter den Artikeln: Wer bei 20minuten.ch kommentiert',
+        link:'articlemain.html',
+        secondaryLink:'article2.html',
+        bgImage:'images/portfolio.png'
+      },
+      {
+        kicker:'Visualisierung',
+        title:'Datenvisualisierungen',
+        text:'Während meines Studiums habe ich gelernt, worauf es bei der Visualisierung von Daten ankommt. Je nach Medium und Zielpublikum stehen unterschiedliche Aspekte im Mittelpunkt. Einige Beispiele auf dieser Seite zeigen Visualisierungen, die ich besonders gelungen und interessant finde.',
+        tags:['Visualisierung','Interaktiv','Karten'],
+        metricLabel:'Tools',
+        metricValue:['R Studio','ggplot2','plotly','tidyverse','d3'],
+        primary:'Interaktive 3D Punktewolke',
+        secondary:'Karte (Replication)',
+        link:'articlemain.html',
+        secondaryLink:'pdf/replication_map.pdf',
+        bgImage:'images/replica.png'
+      },
+      {
+        kicker:'Webdesign',
+        title:'Konzeption und Umsetzung dieser Website',
+        text:'Diese Website habe ich selbst konzipiert, gestaltet und technisch umgesetzt. Ziel war es, eine klare und reduzierte Plattform zu entwickeln, auf der sich Projekte, Datenanalysen und Arbeitsproben übersichtlich präsentieren lassen.',
+        tags:['Konzeption','Layout','Responsive Design','Webdesign'],
+        metricLabel:'Tools',
+        metricValue:['HTML','CSS','JavaScript'],
+        primary:'Home',
+        secondary:'GitHub',
+        link:'index.html',
+        secondaryLink:'https://github.com/christiandavidfrey/christiandavidfrey',
+        bgImage:'images/web.png'
+      }
+    ];
+
+    const stack = document.getElementById('stack');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+
+    let active = 0;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isPointerDown = false;
+    let isDragging = false;
+    let dragLocked = false;
+    let dragDirection = 0;
+
+    function offsetIndex(index){
+      return (index - active + projects.length) % projects.length;
+    }
+
+    function createCard(project, pos){
+      const layer = document.createElement('div');
+      layer.className = 'stack-layer';
+      layer.dataset.pos = Math.min(pos, 3);
+
+      layer.innerHTML = `
+        <article class="project-card ${project.bgImage ? 'has-bg' : ''}" ${project.bgImage ? `style="--card-bg:url('${project.bgImage}')"` : ''}>
+          <div class="card-main">
+            <div>
+              <div class="card-kicker">${project.kicker}</div>
+              <h3 class="card-title">${project.title}</h3>
+              <p class="card-text">${project.text}</p>
+
+              <div class="tags">
+                ${project.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="links">
+              ${project.primary ? `<a class="btn primary" href="${project.link || '#'}" target="_blank" rel="noopener">${project.primary}</a>` : ''}
+              ${project.secondary ? `<a class="btn" href="${project.secondaryLink || '#'}" target="_blank" rel="noopener">${project.secondary}</a>` : ''}
+            </div>
+          </div>
+
+          <aside class="card-side">
+            <div>
+              <div class="metric-label">${project.metricLabel}</div>
+              <div class="metric-value">
+                ${
+                  Array.isArray(project.metricValue)
+                    ? `<ul class="metric-list">${project.metricValue.map(v => `<li>${v}</li>`).join('')}</ul>`
+                    : project.metricValue
+                }
+              </div>
+            </div>
+          </aside>
+        </article>
+      `;
+      return layer;
+    }
+
+    function render(){
+      stack.innerHTML = '';
+      projects
+        .map((p, i) => ({ p, pos: offsetIndex(i) }))
+        .sort((a, b) => a.pos - b.pos)
+        .forEach(({ p, pos }) => {
+          stack.appendChild(createCard(p, pos));
+        });
+    }
+
+    function equalizeCardHeights(){
+      const cards = document.querySelectorAll('.project-card');
+      let maxHeight = 0;
+
+      cards.forEach(card => {
+        card.style.height = 'auto';
+      });
+
+      cards.forEach(card => {
+        const h = card.offsetHeight;
+        if (h > maxHeight) maxHeight = h;
+      });
+
+      document.documentElement.style.setProperty('--card-height', `${maxHeight}px`);
+
+      if (window.innerWidth <= 640) {
+        stack.style.minHeight = `${maxHeight + 60}px`;
+      } else if (window.innerWidth <= 900) {
+        stack.style.minHeight = `${maxHeight + 40}px`;
+      } else {
+        stack.style.minHeight = `${Math.max(maxHeight + 24, 700)}px`;
+      }
+    }
+
+    function rerenderAndResize(){
+      render();
+      requestAnimationFrame(() => {
+        equalizeCardHeights();
+      });
+    }
+
+    function getActiveCard(){
+      return document.querySelector('.stack-layer[data-pos="0"] .project-card');
+    }
+
+    function getNextCard(){
+      return document.querySelector('.stack-layer[data-pos="1"] .project-card');
+    }
+
+    function goNext(){
+      active = (active + 1) % projects.length;
+      rerenderAndResize();
+    }
+
+    function goPrev(){
+      active = (active - 1 + projects.length) % projects.length;
+      rerenderAndResize();
+    }
+
+    function resetSecondaryCard(){
+      const nextCard = getNextCard();
+      if (!nextCard) return;
+      nextCard.style.transition = 'transform .28s ease, opacity .28s ease';
+      nextCard.style.transform = '';
+      nextCard.style.opacity = '';
+    }
+
+    function updateDrag(deltaX){
+      const activeCard = getActiveCard();
+      const nextCard = getNextCard();
+      if (!activeCard) return;
+
+      const progress = Math.min(Math.abs(deltaX) / 180, 1);
+      const rotation = deltaX * 0.035;
+
+      activeCard.classList.add('dragging');
+      activeCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+      activeCard.style.opacity = `${1 - progress * 0.18}`;
+
+      if (nextCard) {
+        nextCard.style.transition = 'none';
+        nextCard.style.opacity = `${0.16 + progress * 0.56}`;
+        nextCard.style.transform = `translateY(${10 - progress * 10}px) scale(${0.985 + progress * 0.015})`;
+      }
+    }
+
+    function cancelDrag(){
+      const activeCard = getActiveCard();
+      if (activeCard) {
+        activeCard.classList.remove('dragging');
+        activeCard.style.transition = 'transform .28s ease, opacity .28s ease';
+        activeCard.style.transform = '';
+        activeCard.style.opacity = '';
+      }
+      resetSecondaryCard();
+      document.body.classList.remove('drag-active');
+    }
+
+    function completeDrag(direction){
+      const activeCard = getActiveCard();
+      if (!activeCard) return;
+
+      activeCard.classList.remove('dragging');
+      activeCard.style.transition = 'transform .28s ease, opacity .28s ease';
+      activeCard.style.transform = `translateX(${direction < 0 ? '-120%' : '120%'}) rotate(${direction < 0 ? -10 : 10}deg)`;
+      activeCard.style.opacity = '0';
+
+      setTimeout(() => {
+        if (direction < 0) {
+          goNext();
+        } else {
+          goPrev();
+        }
+        document.body.classList.remove('drag-active');
+      }, 280);
+    }
+
+    function startInteraction(clientX, clientY){
+      startX = clientX;
+      startY = clientY;
+      currentX = clientX;
+      currentY = clientY;
+      isPointerDown = true;
+      isDragging = false;
+      dragLocked = false;
+      dragDirection = 0;
+    }
+
+    function moveInteraction(clientX, clientY){
+      if (!isPointerDown) return;
+
+      currentX = clientX;
+      currentY = clientY;
+
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
+
+      if (!dragLocked) {
+        if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            dragLocked = true;
+            isDragging = true;
+            document.body.classList.add('drag-active');
+          } else {
+            isPointerDown = false;
+            return;
+          }
+        }
+      }
+
+      if (!isDragging) return;
+
+      dragDirection = deltaX < 0 ? -1 : 1;
+      updateDrag(deltaX);
+    }
+
+    function endInteraction(){
+      if (!isDragging) {
+        isPointerDown = false;
+        return;
+      }
+
+      const deltaX = currentX - startX;
+      const threshold = 110;
+
+      if (Math.abs(deltaX) > threshold) {
+        completeDrag(dragDirection);
+      } else {
+        cancelDrag();
+      }
+
+      isPointerDown = false;
+      isDragging = false;
+      dragLocked = false;
+    }
+
+    prev.onclick = goPrev;
+    next.onclick = goNext;
+
+    rerenderAndResize();
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        rerenderAndResize();
+      }, 120);
+    });
+
+    stack.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.closest('.btn, .control')) return;
+      startInteraction(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      moveInteraction(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('pointerup', () => {
+      endInteraction();
+    });
+
+    window.addEventListener('pointercancel', () => {
+      cancelDrag();
+      isPointerDown = false;
+      isDragging = false;
+      dragLocked = false;
+    });
+
+    window.addEventListener('load', () => {
+      rerenderAndResize();
+
+      setTimeout(() => {
+        const firstCard = getActiveCard();
+        if (!firstCard) return;
+
+        firstCard.classList.add('drag-demo');
+
+        setTimeout(() => {
+          firstCard.classList.remove('drag-demo');
+
+          setTimeout(() => {
+            const currentFirst = getActiveCard();
+            if (currentFirst) currentFirst.classList.add('drag-demo');
+          }, 180);
+        }, 1250);
+      }, 650);
+    });
+  </script>
+
+  <script>
+    const discoverToggle = document.querySelector(".discover-toggle");
+    const discoverOverlay = document.querySelector("#discoverOverlay");
+    const discoverClose = document.querySelector(".discover-close");
+
+    if (discoverToggle && discoverOverlay && discoverClose) {
+      const openMenu = () => {
+        discoverOverlay.classList.add("open");
+        discoverOverlay.setAttribute("aria-hidden", "false");
+        discoverToggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      };
+
+      const closeMenu = () => {
+        discoverOverlay.classList.remove("open");
+        discoverOverlay.setAttribute("aria-hidden", "true");
+        discoverToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      };
+
+      discoverToggle.addEventListener("click", openMenu);
+      discoverClose.addEventListener("click", closeMenu);
+
+      discoverOverlay.addEventListener("click", (e) => {
+        if (e.target === discoverOverlay) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMenu();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

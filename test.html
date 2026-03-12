@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christian David Frey – Data · Analysis · Visual Storytelling</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .skills{
+      padding:24px 0 100px;
+    }
+
+    .skills-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .skill-card{
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      padding:22px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .skill-card h3{
+      margin:0 0 12px;
+      font-size:1rem;
+    }
+
+    .skill-card p{
+      margin:0;
+      color:#bdbdbd;
+      line-height:1.75;
+    }
+
+    .stack-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      margin-bottom:18px;
+      gap:20px;
+    }
+
+    .stack-header h2{
+      margin:0;
+    }
+
+    /* PAGE FLOW */
+    .about-flow{
+      position:relative;
+      padding-bottom:120px;
+      isolation:isolate;
+    }
+
+    .page-flow-svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:0;
+      overflow:visible;
+    }
+
+    .flow-ghost-study{
+      stroke:#d0d4d8;
+      stroke-width:8;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      opacity:.035;
+      filter:blur(18px);
+    }
+
+    .flow-ghost-work{
+      stroke:#3f6b4d;
+      stroke-width:8;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      opacity:.03;
+      filter:blur(18px);
+    }
+
+    .study-line{
+      stroke:#d0d4d8;
+      stroke-width:8;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      opacity:.18;
+      filter:drop-shadow(0 0 4px rgba(255,255,255,0.04));
+      transition:opacity .35s ease;
+    }
+
+    .work-line{
+      stroke:#3f6b4d;
+      stroke-width:8;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      opacity:.16;
+      filter:drop-shadow(0 0 4px rgba(0,66,37,0.12));
+      transition:opacity .35s ease;
+    }
+
+    .page-header,
+    .about-article,
+    .cv-section{
+      position:relative;
+      z-index:2;
+    }
+
+    /* CV SECTION */
+    .cv-section{
+      margin-top:80px;
+      margin-bottom:40px;
+    }
+
+    .cv-stage{
+      position:relative;
+      height:2920px;
+    }
+
+    .cv-node{
+      position:absolute;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      transform:translate(-50%,-50%) scale(0.7);
+      z-index:2;
+      opacity:0;
+      transition:opacity .55s ease, transform .55s ease, box-shadow .55s ease;
+    }
+
+    .cv-node.study{
+      background:#d0d4d8;
+    }
+
+    .cv-node.work{
+      background:#004225;
+    }
+
+    .cv-node.current{
+      box-shadow:0 0 0 8px rgba(255,255,255,.05);
+      animation:cvPulse 2s infinite;
+    }
+
+    @keyframes cvPulse{
+      0%{ transform:translate(-50%,-50%) scale(1); }
+      50%{ transform:translate(-50%,-50%) scale(1.2); }
+      100%{ transform:translate(-50%,-50%) scale(1); }
+    }
+
+    .cv-card{
+      position:absolute;
+      width:280px;
+      background:#1e1e22;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:16px;
+      opacity:0;
+      transform:translateY(34px);
+      transition:opacity .8s ease, transform .8s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      z-index:3;
+    }
+
+    .cv-card.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .cv-card h3{
+      margin:0 0 10px 0;
+      font-size:19px;
+      line-height:1.25;
+    }
+
+    .cv-card p{
+      margin:0 0 10px 0;
+      line-height:1.5;
+    }
+
+    .cv-meta{
+      font-size:13px;
+      color:#b6b6bb;
+      margin-bottom:10px;
+      line-height:1.5;
+    }
+
+    .cv-status{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:6px;
+      background:rgba(255,255,255,.05);
+      display:inline-block;
+      margin-top:8px;
+      color:#d6d6da;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .cv-card-list{
+      margin:10px 0 0 0;
+      padding:0;
+      list-style:none;
+    }
+
+    .cv-card-list li{
+      position:relative;
+      padding-left:16px;
+      margin-bottom:7px;
+      line-height:1.45;
+    }
+
+    .cv-card-list li::before{
+      content:"•";
+      position:absolute;
+      left:0;
+      color:#9ca3af;
+    }
+
+    .portfolio-cta{
+      position:relative;
+      margin-top:-580px;
+      display:flex;
+      justify-content:center;
+      z-index:5;
+    }
+
+    .portfolio-button{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px 34px;
+      border-radius:16px;
+      background:linear-gradient(180deg,#4a4a4f,#2f2f34);
+      border:1px solid rgba(255,255,255,.14);
+      color:#f2f2f3;
+      font-weight:700;
+      font-size:18px;
+      letter-spacing:-0.01em;
+      text-decoration:none;
+      transition:transform .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow:
+        0 14px 28px rgba(0,0,0,.32),
+        0 0 0 0 rgba(255,255,255,.08);
+      animation:buttonPulse 2.2s infinite;
+    }
+
+    .portfolio-button::before{
+      content:"";
+      position:absolute;
+      inset:-10px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.05);
+      opacity:.7;
+    }
+
+    .portfolio-button:hover{
+      transform:translateY(-2px) scale(1.02);
+      background:linear-gradient(180deg,#57575d,#38383d);
+      border-color:rgba(255,255,255,.22);
+      box-shadow:
+        0 18px 34px rgba(0,0,0,.4),
+        0 0 0 10px rgba(255,255,255,.03);
+    }
+
+    @keyframes buttonPulse{
+      0%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 0 rgba(255,255,255,.10);
+      }
+      70%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 16px rgba(255,255,255,0);
+      }
+      100%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 0 rgba(255,255,255,0);
+      }
+    }
+
+    @media (max-width: 900px){
+      .skills-grid{
+        grid-template-columns:1fr;
+      }
+
+      .cv-stage{
+        height:3150px;
+      }
+
+      .cv-card{
+        width:250px;
+      }
+
+      .portfolio-cta{
+        margin-top:-80px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .stack-header{
+        flex-direction:column;
+        align-items:flex-start;
+        margin-bottom:10px;
+      }
+
+      .cv-stage{
+        height:3560px;
+      }
+
+      .cv-card{
+        width:min(84vw,320px);
+        left:50% !important;
+        right:auto !important;
+        transform:translateX(-50%) translateY(34px);
+      }
+
+      .cv-card.visible{
+        transform:translateX(-50%) translateY(0);
+      }
+
+      .cv-node{
+        left:50% !important;
+      }
+
+      .portfolio-button{
+        font-size:17px;
+        padding:16px 28px;
+      }
+
+      .portfolio-cta{
+        margin-top:-60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <div class="brand">
+          <a class="logo" href="index.html">Christian David Frey</a>
+          <div class="brand-sub">Data · Analysis · Visual Storytelling</div>
+        </div>
+
+        <button class="discover-toggle" aria-label="Navigation öffnen" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+          </svg>
+          <span>Entdecken</span>
+        </button>
+
+        <div class="nav-links">
+          <a class="active" href="index.html">Home</a>
+          <a href="news.html">News</a>
+          <a href="portfolio.html">Portfolio</a>
+          <a href="about.html">Über mich</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="discover-overlay" id="discoverOverlay" aria-hidden="true">
+    <div class="discover-panel">
+      <div class="discover-top">
+        <button class="discover-close" aria-label="Navigation schliessen">
+          <span>Schliessen</span>
+        </button>
+      </div>
+
+      <div class="discover-links">
+        <a class="active" href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="about.html">Über mich</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="container about-page">
+    <div class="about-flow" id="aboutFlow">
+
+      <svg class="page-flow-svg" viewBox="0 0 1000 4300" preserveAspectRatio="none" aria-hidden="true">
+        <path class="flow-ghost-study"
+          d="
+          M300 120
+          C360 200,360 320,300 430
+          C230 570,210 760,250 980
+          C320 1320,340 1620,260 1960
+          C190 2260,200 2560,260 2850
+          C300 3040,350 3200,430 3390
+          "
+        />
+
+        <path class="flow-ghost-work"
+          d="
+          M700 150
+          C650 260,640 380,700 520
+          C790 760,820 1020,760 1300
+          C690 1640,690 1920,748 2240
+          C785 2480,770 2750,710 3050
+          C670 3240,620 3360,565 3440
+          "
+        />
+
+        <path id="studyLine" class="study-line"
+          d="
+          M300 120
+          C360 200,360 320,300 430
+          C230 570,210 760,250 980
+          C320 1320,340 1620,260 1960
+          C190 2260,200 2560,260 2850
+          C300 3040,350 3200,430 3390
+          "
+        />
+
+        <path id="workLine" class="work-line"
+          d="
+          M700 150
+          C650 260,640 380,700 520
+          C790 760,820 1020,760 1300
+          C690 1640,690 1920,748 2240
+          C785 2480,770 2750,710 3050
+          C670 3240,620 3360,565 3440
+          "
+        />
+      </svg>
+
+      <section class="page-header about-header">
+        <h1 class="page-title">Über mich</h1>
+      </section>
+  
+      <article class="article-box about-article">
+        <p class="lead">
+          <strong>
+            Ich bin Christian David Frey und habe vor kurzem mein Masterstudium in Politikwissenschaft an der Universität Zürich abgeschlossen. Auf dieser Website mache ich Arbeiten zugänglich, die zeigen, wie ich Daten, Recherche und visuelles Erzählen verbinde.
+          </strong>
+        </p>
+  
+        <p>
+          Ich interessiere mich besonders für digitale Medien, Webdesign und datengetriebenen Journalismus. Im Rahmen meiner Anstellung beim Forschungszentrum Öffentlichkeit und Gesellschaft (fög) der Universität Zürich habe ich verschiedene Newsseiten gescraped und Datensätze erstellt. Einige dieser Daten habe ich auf dieser Website in kleine Stories verpackt. Zudem findet sich hier auch das Working Paper, das aus meiner Masterarbeit entstanden ist.
+        </p>
+  
+        <p>
+          Während meines Studiums habe ich mich intensiv mit der Schweizer Politiklandschaft beschäftigt. Darüber hinaus interessieren mich Themen wie Populismus und Wahlforschung.
+        </p>
+  
+        <p>
+          Auf dieser Website finden Sie ausserdem weitere Informationen zu meinen Interessen, Fähigkeiten und Projekten.
+        </p>
+  
+        <p>
+          In meiner Freizeit spiele ich Gitarre und Schlagzeug, beschäftige mich gelegentlich mit Siebdruck oder gehe Joggen im Wald. Ansonsten findet man mich auch hin und wieder auf dem Motorrad.
+        </p>
+  
+        <p>
+          Ich hoffe, diese Website gibt einen kleinen Überblick über meine Person und macht meine Interessen und Fähigkeiten greifbarer. Für einen vollständigen CV und Leistungsnachweise können Sie mich gerne kontaktieren.
+        </p>
+  
+        <p class="about-signature">
+          Beste Grüsse<br>
+          Christian David Frey
+        </p>
+      </article>
+
+      <div style="margin-top:120px;"></div>
+
+      <section class="cv-section">
+        <div class="cv-stage" id="timeline">
+
+          <div class="cv-node study" style="left:25%;top:5%"></div>
+          <div class="cv-card" style="left:0%;top:4%">
+            <h3>Maturität</h3>
+            <div class="cv-meta">Atelierschule Zürich · 08/2011–08/2015</div>
+            <ul class="cv-card-list">
+              <li>Sozialpraktikum und erste gesellschaftspolitische Erfahrungen</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study" style="left:25%;top:15%"></div>
+          <div class="cv-card" style="left:0%;top:14%">
+            <h3>Diploma Studium Audio Engineering</h3>
+            <div class="cv-meta">SAE Institute Zürich · 03/2016–03/2017</div>
+            <ul class="cv-card-list">
+              <li>Vertiefte Kenntnisse in der Ton- und Veranstaltungstechnik</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study" style="left:25%;top:30%"></div>
+          <div class="cv-card" style="left:0%;top:29%">
+            <h3>Bachelor of Arts in Sozialwissenschaften</h3>
+            <div class="cv-meta">Universität Zürich · 09/2019–06/2023</div>
+            <ul class="cv-card-list">
+              <li>Major Politikwissenschaft</li>
+              <li>Minor Rechtswissenschaft</li>
+              <li>Spezialisierung: Der Wandel des Schweizer Parteiensystems</li>
+              <li>Bachelorarbeit: Note 5.5</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study current" style="left:25%;top:50%"></div>
+          <div class="cv-card" style="left:0%;top:49%">
+            <h3>Master of Arts in Sozialwissenschaften</h3>
+            <div class="cv-meta">Universität Zürich · 09/2023–01/2026</div>
+            <ul class="cv-card-list">
+              <li>Major: Politikwissenschaft</li>
+              <li>Minor “Methods-Data-Society” (30 ECTS)</li>
+              <li>Forschungsseminar politischer Datenjournalismus</li>
+              <li>Seminar: Webentwicklung und Datenvisualisierung</li>
+              <li>R Programming Skills</li>
+              <li>Masterarbeit: „Finanzielle Unzufriedenheit und die Wahl der Schweizerischen Volkspartei: Eine Analyse indirekter Effekte im Kontext des Rechtspopulismus”</li>
+              <li>Note 6.0</li>
+            </ul>
+            <div class="cv-status">Abgeschlossen 01/2026</div>
+          </div>
+
+          <div class="cv-node work" style="left:75%;top:35%"></div>
+          <div class="cv-card" style="right:0%;top:34%">
+            <h3>Praktikum (60%)</h3>
+            <div class="cv-meta">Die Mitte Kanton Zürich · 07/2022–03/2023</div>
+            <ul class="cv-card-list">
+              <li>Erstellen von Print- und Online Content</li>
+              <li>Administration / Mitgliederregister</li>
+              <li>Webseitenpflege</li>
+              <li>Koordination zwischen Ortsgruppen</li>
+              <li>Nachwahlbefragung mit Auswertung in R</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="left:75%;top:45%"></div>
+          <div class="cv-card" style="right:0%;top:49%">
+            <h3>Campaigner (20%)</h3>
+            <div class="cv-meta">AWG Die Mitte Kanton Zürich · 07/2023–10/2023</div>
+            <ul class="cv-card-list">
+              <li>Campaigning für die Nationalratswahlen 2023</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="left:75%;top:60%"></div>
+          <div class="cv-card" style="right:0%;top:59%">
+            <h3>Hilfswissenschaftler (40%)</h3>
+            <div class="cv-meta">Forschungszentrum Öffentlichkeit und Gesellschaft (fög) · 02/2025–heute</div>
+            <ul class="cv-card-list">
+              <li>Quantitative Analysen</li>
+              <li>Codierung von Medieninhalten u.a. „Jahrbuch Qualität der Medien”</li>
+              <li>Entwicklung von Codierleitfäden</li>
+              <li>Datenerhebung durch Web-Scraping</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="left:75%;top:70%"></div>
+          <div class="cv-card" style="right:0%;top:69%">
+            <h3>Content Integrator (15%)</h3>
+            <div class="cv-meta">StatGuide · 05/2025–09/2025</div>
+            <ul class="cv-card-list">
+              <li>Aufbereitung statistischer Lernressourcen</li>
+              <li>Planung und Umsetzung von Arbeitspaketen zur Erstellung digitaler Lernressourcen</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="portfolio-cta">
+          <a class="portfolio-button" href="portfolio.html" target="_blank" rel="noopener noreferrer">
+            Zum Portfolio
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer site-footer-home">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span>© 2026 Christian David Frey</span>
+        <a href="mailto:ch.frey@live.de">ch.frey@live.de</a>
+      </div>
+
+      <span class="social">
+        <a href="https://www.instagram.com/dave.iniert"
+           target="_blank"
+           rel="noopener"
+           aria-label="Instagram Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5zm4.25 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm4.75-3a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/>
+          </svg>
+        </a>
+
+        <a href="https://www.linkedin.com/in/christian-david-frey-68b29237b/"
+           target="_blank"
+           rel="noopener"
+           aria-label="LinkedIn Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20.45 20.45h-3.55v-5.56c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.65H7.32V9h3.41v1.56h.05c.47-.9 1.62-1.85 3.33-1.85 3.56 0 4.21 2.34 4.21 5.38v6.36zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/>
+          </svg>
+        </a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    const discoverToggle = document.querySelector(".discover-toggle");
+    const discoverOverlay = document.querySelector("#discoverOverlay");
+    const discoverClose = document.querySelector(".discover-close");
+
+    if (discoverToggle && discoverOverlay && discoverClose) {
+      const openMenu = () => {
+        discoverOverlay.classList.add("open");
+        discoverOverlay.setAttribute("aria-hidden", "false");
+        discoverToggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      };
+
+      const closeMenu = () => {
+        discoverOverlay.classList.remove("open");
+        discoverOverlay.setAttribute("aria-hidden", "true");
+        discoverToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      };
+
+      discoverToggle.addEventListener("click", openMenu);
+      discoverClose.addEventListener("click", closeMenu);
+
+      discoverOverlay.addEventListener("click", (e) => {
+        if (e.target === discoverOverlay) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMenu();
+        }
+      });
+    }
+  </script>
+
+  <script>
+    const studyLine = document.getElementById("studyLine");
+    const workLine = document.getElementById("workLine");
+    const aboutFlow = document.getElementById("aboutFlow");
+    const timeline = document.getElementById("timeline");
+    const aboutArticle = document.querySelector(".about-article");
+
+    if (studyLine && workLine && aboutFlow && timeline) {
+      const studyLength = studyLine.getTotalLength();
+      const workLength = workLine.getTotalLength();
+
+      studyLine.style.strokeDasharray = studyLength;
+      studyLine.style.strokeDashoffset = studyLength;
+
+      workLine.style.strokeDasharray = workLength;
+      workLine.style.strokeDashoffset = workLength;
+
+      const cards = [...document.querySelectorAll(".cv-card")];
+      const nodes = [...document.querySelectorAll(".cv-node")];
+
+      const cardSteps = [
+        { el: cards[0], reveal: 0.34, hide: 0.26 },
+        { el: cards[1], reveal: 0.42, hide: 0.34 },
+        { el: cards[2], reveal: 0.52, hide: 0.44 },
+
+        { el: cards[4], reveal: 0.60, hide: 0.52 },
+        { el: cards[5], reveal: 0.67, hide: 0.59 },
+
+        { el: cards[3], reveal: 0.74, hide: 0.66 },
+
+        { el: cards[6], reveal: 0.82, hide: 0.74 },
+        { el: cards[7], reveal: 0.89, hide: 0.81 }
+      ];
+
+      const nodeSteps = [
+        { el: nodes[0], reveal: 0.30, hide: 0.22 },
+        { el: nodes[1], reveal: 0.38, hide: 0.30 },
+        { el: nodes[2], reveal: 0.48, hide: 0.40 },
+
+        { el: nodes[4], reveal: 0.56, hide: 0.48 },
+        { el: nodes[5], reveal: 0.63, hide: 0.55 },
+
+        { el: nodes[3], reveal: 0.70, hide: 0.62 },
+
+        { el: nodes[6], reveal: 0.78, hide: 0.70 },
+        { el: nodes[7], reveal: 0.85, hide: 0.77 }
+      ];
+
+      function clamp(value, min, max){
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function updateTimeline(){
+        const rect = aboutFlow.getBoundingClientRect();
+        const vh = window.innerHeight;
+
+        const start = vh * 0.95;
+        const end = -rect.height * 0.72;
+
+        let progress = (start - rect.top) / (start - end);
+        progress = clamp(progress, 0, 1);
+
+        studyLine.style.strokeDashoffset = studyLength * (1 - progress);
+        workLine.style.strokeDashoffset = workLength * (1 - progress);
+
+        if (aboutArticle) {
+          const articleRect = aboutArticle.getBoundingClientRect();
+          const articleCenter = articleRect.top + articleRect.height / 2;
+          const viewportCenter = vh * 0.42;
+
+          const distance = Math.abs(articleCenter - viewportCenter);
+          const fade = clamp(1 - distance / (vh * 0.9), 0, 1);
+
+          const topStudyOpacity = 0.10;
+          const topWorkOpacity = 0.08;
+
+          const bottomStudyOpacity = 0.9;
+          const bottomWorkOpacity = 0.82;
+
+          const localBoost = progress;
+
+          studyLine.style.opacity =
+            (topStudyOpacity + (bottomStudyOpacity - topStudyOpacity) * localBoost * (1 - fade * 0.75)).toFixed(3);
+
+          workLine.style.opacity =
+            (topWorkOpacity + (bottomWorkOpacity - topWorkOpacity) * localBoost * (1 - fade * 0.75)).toFixed(3);
+        }
+
+        nodeSteps.forEach(step => {
+          if (progress >= step.reveal) {
+            step.el.style.opacity = "1";
+            step.el.style.transform = "translate(-50%, -50%) scale(1)";
+          } else if (progress < step.hide) {
+            step.el.style.opacity = "0";
+            step.el.style.transform = "translate(-50%, -50%) scale(0.7)";
+          }
+        });
+
+        cardSteps.forEach(step => {
+          if (progress >= step.reveal) {
+            step.el.classList.add("visible");
+          } else if (progress < step.hide) {
+            step.el.classList.remove("visible");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", updateTimeline, { passive:true });
+      window.addEventListener("resize", updateTimeline);
+
+      updateTimeline();
+    }
+  </script>
+</body>
+</html>

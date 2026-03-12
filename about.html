@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christian David Frey – Data · Analysis · Visual Storytelling</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    html, body{
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    .skills{
+      padding:24px 0 100px;
+    }
+
+    .skills-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .skill-card{
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      padding:22px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .skill-card h3{
+      margin:0 0 12px;
+      font-size:1rem;
+    }
+
+    .skill-card p{
+      margin:0;
+      color:#bdbdbd;
+      line-height:1.75;
+    }
+
+    .stack-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      margin-bottom:18px;
+      gap:20px;
+    }
+
+    .stack-header h2{
+      margin:0;
+    }
+
+    .page-header,
+    .about-article,
+    .cv-section{
+      position:relative;
+      z-index:2;
+    }
+
+    .about-flow{
+      position:relative;
+      padding-bottom:120px;
+      isolation:isolate;
+    }
+
+    .page-flow-svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:0;
+      overflow:visible;
+    }
+
+    .ghost-line{
+      fill:none;
+      stroke-linecap:round;
+      opacity:0;
+      visibility:hidden;
+    }
+
+    .ghost-study{
+      stroke:#d0d4d8;
+      stroke-width:6;
+    }
+
+    .ghost-work{
+      stroke:#3f6b4d;
+      stroke-width:6;
+    }
+
+    .main-line{
+      fill:none;
+      stroke-linecap:round;
+      stroke-width:10;
+      opacity:0;
+      visibility:hidden;
+      will-change:stroke-dashoffset, opacity;
+    }
+
+    .main-study{
+      stroke:#d0d4d8;
+      filter:drop-shadow(0 0 6px rgba(255,255,255,.05));
+    }
+
+    .main-work{
+      stroke:#3f6b4d;
+      filter:drop-shadow(0 0 6px rgba(63,107,77,.12));
+    }
+
+    .about-top{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:16px;
+      margin:12px 0 52px;
+      position:relative;
+      z-index:3;
+    }
+
+    .about-top-block{
+      min-height:430px;
+      min-width:0;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 16px 34px rgba(0,0,0,.18);
+    }
+
+    .about-top-block-copy{
+      padding:34px 38px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .about-top-copy-left{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      height:100%;
+      gap:28px;
+      min-width:0;
+    }
+
+    .about-eyebrow{
+      margin:0 0 14px;
+      font-size:.95rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#b8b8bd;
+    }
+
+    .about-top-label{
+      margin:0;
+      font-size:clamp(2.5rem, 4.4vw, 4.2rem);
+      line-height:.93;
+      letter-spacing:0;
+      max-width:8ch;
+      overflow-wrap:break-word;
+    }
+
+    .about-keywords{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .about-keywords span{
+      display:inline-flex;
+      align-items:center;
+      min-height:36px;
+      max-width:100%;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:#ececef;
+      font-size:.95rem;
+      letter-spacing:-.01em;
+    }
+
+    .about-top-block-image{
+      padding:0;
+      min-height:430px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .about-image-fill{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+    }
+
+    .about-image-fill img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center 22%;
+      display:block;
+      filter:grayscale(.08) contrast(1.04) brightness(.92);
+      transform:scale(1.01);
+    }
+
+    .about-image-overlay{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(10,10,14,.08) 0%, rgba(10,10,14,.16) 100%),
+        linear-gradient(135deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,0) 38%);
+    }
+
+    .about-article{
+      max-width:760px;
+      margin:0 auto;
+      position:relative;
+      z-index:3;
+    }
+
+    .cv-section{
+      margin-top:90px;
+      margin-bottom:40px;
+      position:relative;
+      z-index:3;
+    }
+
+    .cv-stage{
+      position:relative;
+      height:2900px;
+      width:100%;
+    }
+
+    .cv-node{
+      position:absolute;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      transform:translate(-50%,-50%) scale(0.55);
+      z-index:4;
+      opacity:0;
+      transition:opacity .28s ease, transform .28s ease, box-shadow .35s ease;
+      box-shadow:0 0 0 8px rgba(255,255,255,.05);
+      animation:cvPulse 2s infinite;
+      will-change:transform, opacity;
+    }
+
+    .cv-node.study{
+      background:#d0d4d8;
+      left:44%;
+    }
+
+    .cv-node.work{
+      background:#6fae7f;
+      left:56%;
+    }
+
+    @keyframes cvPulse{
+      0%{ transform:translate(-50%,-50%) scale(1); }
+      50%{ transform:translate(-50%,-50%) scale(1.14); }
+      100%{ transform:translate(-50%,-50%) scale(1); }
+    }
+
+    .cv-card{
+      position:absolute;
+      width:300px;
+      max-width:min(300px, calc(50vw - 110px));
+      background:#1e1e22;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:16px;
+      opacity:0;
+      transform:translateY(26px);
+      transition:opacity .45s ease, transform .45s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      z-index:5;
+      pointer-events:none;
+      overflow-wrap:break-word;
+      will-change:transform, opacity;
+    }
+
+    .cv-card.left{
+      left:max(16px, calc(44% - min(300px, calc(50vw - 110px)) - 44px));
+    }
+
+    .cv-card.right{
+      left:calc(56% + 44px);
+    }
+
+    .cv-card.visible{
+      opacity:1;
+      transform:translateY(0);
+      pointer-events:auto;
+    }
+
+    .cv-card h3{
+      margin:0 0 10px 0;
+      font-size:19px;
+      line-height:1.25;
+    }
+
+    .cv-meta{
+      font-size:13px;
+      color:#b6b6bb;
+      margin-bottom:10px;
+      line-height:1.5;
+    }
+
+    .cv-status{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:6px;
+      background:rgba(255,255,255,.05);
+      display:inline-block;
+      margin-top:8px;
+      color:#d6d6da;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .cv-card-list{
+      margin:10px 0 0 0;
+      padding:0;
+      list-style:none;
+    }
+
+    .cv-card-list li{
+      position:relative;
+      padding-left:16px;
+      margin-bottom:7px;
+      line-height:1.45;
+    }
+
+    .cv-card-list li::before{
+      content:"•";
+      position:absolute;
+      left:0;
+      color:#9ca3af;
+    }
+
+    .portfolio-cta{
+      position:relative;
+      margin-top:-420px;
+      display:flex;
+      justify-content:center;
+      z-index:5;
+      width:100%;
+    }
+
+    .portfolio-button{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px 34px;
+      border-radius:16px;
+      background:linear-gradient(180deg,#4a4a4f,#2f2f34);
+      border:1px solid rgba(255,255,255,.14);
+      color:#f2f2f3;
+      font-weight:700;
+      font-size:18px;
+      letter-spacing:-0.01em;
+      text-decoration:none;
+      transition:transform .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow:
+        0 14px 28px rgba(0,0,0,.32),
+        0 0 0 0 rgba(255,255,255,.08);
+      animation:buttonPulse 2.2s infinite;
+      max-width:calc(100vw - 32px);
+    }
+
+    .portfolio-button::before{
+      content:"";
+      position:absolute;
+      inset:-10px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.05);
+      opacity:.7;
+    }
+
+    .portfolio-button:hover{
+      transform:translateY(-2px) scale(1.02);
+      background:linear-gradient(180deg,#57575d,#38383d);
+      border-color:rgba(255,255,255,.22);
+      box-shadow:
+        0 18px 34px rgba(0,0,0,.4),
+        0 0 0 10px rgba(255,255,255,.03);
+    }
+
+    @keyframes buttonPulse{
+      0%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 0 rgba(255,255,255,.10);
+      }
+      70%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 16px rgba(255,255,255,0);
+      }
+      100%{
+        box-shadow:
+          0 14px 28px rgba(0,0,0,.32),
+          0 0 0 0 rgba(255,255,255,0);
+      }
+    }
+
+    @media (max-width: 1100px){
+      .cv-card{
+        width:270px;
+        max-width:min(270px, calc(50vw - 90px));
+      }
+
+      .cv-card.left{
+        left:max(16px, calc(44% - min(270px, calc(50vw - 90px)) - 36px));
+      }
+
+      .cv-card.right{
+        left:calc(56% + 36px);
+      }
+    }
+
+    @media (max-width: 900px){
+      .about-top{
+        grid-template-columns:1fr;
+      }
+
+      .about-top-block,
+      .about-top-block-image{
+        min-height:auto;
+      }
+
+      .about-top-block-copy{
+        padding:28px 24px;
+      }
+
+      .about-top-label{
+        max-width:none;
+        white-space:nowrap;
+        font-size:clamp(2rem, 6vw, 3.4rem);
+      }
+
+      .about-top-block-image{
+        min-height:420px;
+      }
+
+      .cv-stage{
+        height:3500px;
+      }
+
+      .cv-node.study{ left:48%; }
+      .cv-node.work{ left:52%; }
+
+      .cv-card{
+        width:220px;
+        max-width:calc(50vw - 54px);
+      }
+
+      .cv-card.left{
+        left:max(12px, calc(48% - min(220px, calc(50vw - 54px)) - 26px));
+      }
+
+      .cv-card.right{
+        left:calc(52% + 26px);
+      }
+
+      .portfolio-cta{
+        margin-top:-390px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .about-top-block-copy{
+        padding:24px 20px;
+      }
+
+      .about-top-label{
+        max-width:none;
+        white-space:normal;
+      }
+
+      .about-keywords span{
+        font-size:.88rem;
+        min-height:34px;
+        padding:0 12px;
+      }
+
+      .about-top-block-image{
+        min-height:360px;
+      }
+
+      .cv-section{
+        display:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <div class="brand">
+          <a class="logo" href="index.html">Christian David Frey</a>
+          <div class="brand-sub">Data · Analysis · Visual Storytelling</div>
+        </div>
+
+        <button class="discover-toggle" aria-label="Navigation öffnen" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+          </svg>
+          <span>Entdecken</span>
+        </button>
+
+        <div class="nav-links">
+          <a class="active" href="index.html">Home</a>
+          <a href="news.html">News</a>
+          <a href="portfolio.html">Portfolio</a>
+          <a href="about.html">Über mich</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="discover-overlay" id="discoverOverlay" aria-hidden="true">
+    <div class="discover-panel">
+      <div class="discover-top">
+        <button class="discover-close" aria-label="Navigation schliessen">
+          <span>Schliessen</span>
+        </button>
+      </div>
+
+      <div class="discover-links">
+        <a class="active" href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="about.html">Über mich</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="container about-page">
+    <div class="about-flow" id="aboutFlow">
+
+      <svg class="page-flow-svg" id="pageFlowSvg" viewBox="0 0 1000 4300" preserveAspectRatio="none" aria-hidden="true">
+        <line id="ghostStudy" class="ghost-line ghost-study" x1="440" y1="560" x2="440" y2="3800"></line>
+        <line id="ghostWork" class="ghost-line ghost-work" x1="560" y1="560" x2="560" y2="3800"></line>
+
+        <line id="studyLine" class="main-line main-study" x1="440" y1="560" x2="440" y2="3800"></line>
+        <line id="workLine" class="main-line main-work" x1="560" y1="560" x2="560" y2="3800"></line>
+
+        <line id="branch1" class="main-line main-study" style="stroke-width:4; opacity:0"></line>
+        <line id="branch2" class="main-line main-study" style="stroke-width:4; opacity:0"></line>
+        <line id="branch3" class="main-line main-study" style="stroke-width:4; opacity:0"></line>
+        <line id="branch4" class="main-line main-study" style="stroke-width:4; opacity:0"></line>
+
+        <line id="branch5" class="main-line main-work" style="stroke-width:4; opacity:0"></line>
+        <line id="branch6" class="main-line main-work" style="stroke-width:4; opacity:0"></line>
+        <line id="branch7" class="main-line main-work" style="stroke-width:4; opacity:0"></line>
+        <line id="branch8" class="main-line main-work" style="stroke-width:4; opacity:0"></line>
+      </svg>
+
+      <section class="page-header about-header">
+        <div class="about-top">
+          <div class="about-top-block about-top-block-copy">
+            <div class="about-top-copy-left">
+              <div>
+                <p class="about-eyebrow">Über mich</p>
+                <h1 class="about-top-label">Christian David Frey</h1>
+              </div>
+
+              <div class="about-keywords">
+                <span>Politikwissenschaft</span>
+                <span>Datenanalyse</span>
+                <span>Campaigner</span>
+                <span>Visual Storytelling</span>
+                <span>Journalismus</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-top-block about-top-block-image">
+            <div class="about-image-fill">
+              <img
+                src="images/port_2.png"
+                alt="Portrait von Christian David Frey"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              >
+              <div class="about-image-overlay"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article-box about-article">
+        <p class="lead">
+          <strong>
+            Ich bin Christian David Frey und habe vor kurzem mein Masterstudium in Politikwissenschaft an der Universität Zürich abgeschlossen. Auf dieser Website mache ich Arbeiten zugänglich, die zeigen, wie ich Daten, Recherche und visuelles Erzählen verbinde.
+          </strong>
+        </p>
+
+        <p>
+          Ich interessiere mich besonders für digitale Medien, Webdesign und datengetriebenen Journalismus. Im Rahmen meiner Anstellung beim Forschungszentrum Öffentlichkeit und Gesellschaft (fög) der Universität Zürich habe ich verschiedene Newsseiten gescraped und Datensätze erstellt. Einige dieser Daten habe ich auf dieser Website in kleine Stories verpackt. Zudem findet sich hier auch das Working Paper, das aus meiner Masterarbeit entstanden ist.
+        </p>
+
+        <p>
+          Während meines Studiums habe ich mich intensiv mit der Schweizer Politiklandschaft beschäftigt. Darüber hinaus interessieren mich Themen wie Populismus und Wahlforschung.
+        </p>
+
+        <p>
+          Auf dieser Website finden Sie ausserdem weitere Informationen zu meinen Interessen, Fähigkeiten und Projekten.
+        </p>
+
+        <p>
+          In meiner Freizeit spiele ich Gitarre und Schlagzeug, beschäftige mich gelegentlich mit Siebdruck oder gehe Joggen im Wald. Ansonsten findet man mich auch hin und wieder auf dem Motorrad.
+        </p>
+
+        <p>
+          Ich hoffe, diese Website gibt einen kleinen Überblick über meine Person und macht meine Interessen und Fähigkeiten greifbarer. Für einen vollständigen CV und Leistungsnachweise können Sie mich gerne kontaktieren.
+        </p>
+
+        <p class="about-signature">
+          Beste Grüsse<br>
+          Christian David Frey
+        </p>
+      </article>
+
+      <div style="margin-top:120px;"></div>
+
+      <section class="cv-section">
+        <div class="cv-stage" id="timeline">
+
+          <div class="cv-node study" style="top:6%"></div>
+          <div class="cv-card left" style="top:4%">
+            <h3>Maturität</h3>
+            <div class="cv-meta">Atelierschule Zürich · 08/2011–08/2015</div>
+            <ul class="cv-card-list">
+              <li>Sozialpraktikum und erste gesellschaftspolitische Erfahrungen</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study" style="top:16%"></div>
+          <div class="cv-card left" style="top:14%">
+            <h3>Diploma Studium Audio Engineering</h3>
+            <div class="cv-meta">SAE Institute Zürich · 03/2016–03/2017</div>
+            <ul class="cv-card-list">
+              <li>Vertiefte Kenntnisse in der Ton- und Veranstaltungstechnik</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study" style="top:31%"></div>
+          <div class="cv-card left" style="top:29%">
+            <h3>Bachelor of Arts in Sozialwissenschaften</h3>
+            <div class="cv-meta">Universität Zürich · 09/2019–06/2023</div>
+            <ul class="cv-card-list">
+              <li>Major Politikwissenschaft</li>
+              <li>Minor Rechtswissenschaft</li>
+              <li>Spezialisierung: Der Wandel des Schweizer Parteiensystems</li>
+              <li>Bachelorarbeit: Note 5.5</li>
+            </ul>
+          </div>
+
+          <div class="cv-node study" style="top:51%"></div>
+          <div class="cv-card left" style="top:49%">
+            <h3>Master of Arts in Sozialwissenschaften</h3>
+            <div class="cv-meta">Universität Zürich · 09/2023–01/2026</div>
+            <ul class="cv-card-list">
+              <li>Major: Politikwissenschaft</li>
+              <li>Minor “Methods-Data-Society” (30 ECTS)</li>
+              <li>Forschungsseminar politischer Datenjournalismus</li>
+              <li>Seminar: Webentwicklung und Datenvisualisierung</li>
+              <li>R Programming Skills</li>
+              <li>Masterarbeit: „Finanzielle Unzufriedenheit und die Wahl der Schweizerischen Volkspartei: Eine Analyse indirekter Effekte im Kontext des Rechtspopulismus” (Note 6.0)</li>
+            </ul>
+            <div class="cv-status">Abgeschlossen 01/2026</div>
+          </div>
+
+          <div class="cv-node work" style="top:36%"></div>
+          <div class="cv-card right" style="top:34%">
+            <h3>Praktikum (60%)</h3>
+            <div class="cv-meta">Die Mitte Kanton Zürich · 07/2022–03/2023</div>
+            <ul class="cv-card-list">
+              <li>Erstellen von Print- und Online Content</li>
+              <li>Administration / Mitgliederregister</li>
+              <li>Webseitenpflege</li>
+              <li>Koordination zwischen Ortsgruppen</li>
+              <li>Nachwahlbefragung mit Auswertung in R</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="top:47%"></div>
+          <div class="cv-card right" style="top:46%">
+            <h3>Campaigner (20%)</h3>
+            <div class="cv-meta">AWG Die Mitte Kanton Zürich · 07/2023–10/2023</div>
+            <ul class="cv-card-list">
+              <li>Campaigning für die Nationalratswahlen 2023</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="top:62%"></div>
+          <div class="cv-card right" style="top:60%">
+            <h3>Hilfswissenschaftler (40%)</h3>
+            <div class="cv-meta">Forschungszentrum Öffentlichkeit und Gesellschaft (fög) · 02/2025–heute</div>
+            <ul class="cv-card-list">
+              <li>Quantitative Analysen</li>
+              <li>Codierung von Medieninhalten u.a. „Jahrbuch Qualität der Medien”</li>
+              <li>Entwicklung von Codierleitfäden</li>
+              <li>Datenerhebung durch Web-Scraping</li>
+            </ul>
+          </div>
+
+          <div class="cv-node work" style="top:73%"></div>
+          <div class="cv-card right" style="top:72%">
+            <h3>Content Integrator (15%)</h3>
+            <div class="cv-meta">StatGuide · 05/2025–09/2025</div>
+            <ul class="cv-card-list">
+              <li>Aufbereitung statistischer Lernressourcen</li>
+              <li>Planung und Umsetzung von Arbeitspaketen zur Erstellung digitaler Lernressourcen</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="portfolio-cta">
+          <a class="portfolio-button" href="portfolio.html" target="_blank" rel="noopener noreferrer">
+            Zum Portfolio
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer site-footer-home">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span>© 2026 Christian David Frey</span>
+        <a href="mailto:ch.frey@live.de">ch.frey@live.de</a>
+      </div>
+
+      <span class="social">
+        <a href="https://www.instagram.com/dave.iniert" target="_blank" rel="noopener" aria-label="Instagram Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5zm4.25 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm4.75-3a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/>
+          </svg>
+        </a>
+
+        <a href="https://www.linkedin.com/in/christian-david-frey-68b29237b/" target="_blank" rel="noopener" aria-label="LinkedIn Profil">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20.45 20.45h-3.55v-5.56c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.65H7.32V9h3.41v1.56h.05c.47-.9 1.62-1.85 3.33-1.85 3.56 0 4.21 2.34 4.21 5.38v6.36zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.56V9H3.56v11.45z"/>
+          </svg>
+        </a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    const discoverToggle = document.querySelector(".discover-toggle");
+    const discoverOverlay = document.querySelector("#discoverOverlay");
+    const discoverClose = document.querySelector(".discover-close");
+
+    if (discoverToggle && discoverOverlay && discoverClose) {
+      const openMenu = () => {
+        discoverOverlay.classList.add("open");
+        discoverOverlay.setAttribute("aria-hidden", "false");
+        discoverToggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      };
+
+      const closeMenu = () => {
+        discoverOverlay.classList.remove("open");
+        discoverOverlay.setAttribute("aria-hidden", "true");
+        discoverToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      };
+
+      discoverToggle.addEventListener("click", openMenu);
+      discoverClose.addEventListener("click", closeMenu);
+
+      discoverOverlay.addEventListener("click", (e) => {
+        if (e.target === discoverOverlay) closeMenu();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+      });
+    }
+  </script>
+
+  <script>
+    const aboutFlow = document.getElementById("aboutFlow");
+    const studyLine = document.getElementById("studyLine");
+    const workLine = document.getElementById("workLine");
+    const ghostStudy = document.getElementById("ghostStudy");
+    const ghostWork = document.getElementById("ghostWork");
+    const pageFlowSvg = document.getElementById("pageFlowSvg");
+
+    const branchEls = [
+      document.getElementById("branch1"),
+      document.getElementById("branch2"),
+      document.getElementById("branch3"),
+      document.getElementById("branch4"),
+      document.getElementById("branch5"),
+      document.getElementById("branch6"),
+      document.getElementById("branch7"),
+      document.getElementById("branch8")
+    ];
+
+    if (aboutFlow && studyLine && workLine && pageFlowSvg) {
+      const cards = [...document.querySelectorAll(".cv-card")];
+      const nodes = [...document.querySelectorAll(".cv-node")];
+      const article = document.querySelector(".about-article");
+      let ticking = false;
+
+      const items = [
+        { node: nodes[0], card: cards[0], branch: branchEls[0], line: studyLine, side: "left" },
+        { node: nodes[1], card: cards[1], branch: branchEls[1], line: studyLine, side: "left" },
+        { node: nodes[2], card: cards[2], branch: branchEls[2], line: studyLine, side: "left" },
+        { node: nodes[3], card: cards[3], branch: branchEls[3], line: studyLine, side: "left" },
+
+        { node: nodes[4], card: cards[4], branch: branchEls[4], line: workLine, side: "right" },
+        { node: nodes[5], card: cards[5], branch: branchEls[5], line: workLine, side: "right" },
+        { node: nodes[6], card: cards[6], branch: branchEls[6], line: workLine, side: "right" },
+        { node: nodes[7], card: cards[7], branch: branchEls[7], line: workLine, side: "right" }
+      ];
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function svgCoordsFromViewport(viewportX, viewportY) {
+        const flowRect = aboutFlow.getBoundingClientRect();
+        return {
+          x: ((viewportX - flowRect.left) / flowRect.width) * 1000,
+          y: ((viewportY - flowRect.top) / flowRect.height) * 4300
+        };
+      }
+
+      function setupPath(path) {
+        if (!path) return;
+        const len = path.getTotalLength();
+        path.dataset.len = len;
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = len;
+        path.style.visibility = "visible";
+      }
+
+      function drawPath(path, amount) {
+        if (!path) return;
+        const len = Number(path.dataset.len || 0);
+        path.style.strokeDashoffset = len * (1 - amount);
+      }
+
+      function updateBranchGeometry() {
+        items.forEach(item => {
+          if (!item.node || !item.card || !item.branch) return;
+
+          const nodeRect = item.node.getBoundingClientRect();
+          const cardRect = item.card.getBoundingClientRect();
+
+          const nodeCenterX = nodeRect.left + nodeRect.width / 2;
+          const nodeCenterY = nodeRect.top + nodeRect.height / 2;
+          const cardAnchorX = item.side === "left" ? cardRect.right : cardRect.left;
+
+          const nodeSvg = svgCoordsFromViewport(nodeCenterX, nodeCenterY);
+          const cardSvg = svgCoordsFromViewport(cardAnchorX, nodeCenterY);
+
+          item.nodeSvgX = nodeSvg.x;
+          item.nodeSvgY = nodeSvg.y;
+          item.branchLength = Math.abs(cardSvg.x - nodeSvg.x);
+
+          item.branch.setAttribute("x1", nodeSvg.x);
+          item.branch.setAttribute("y1", nodeSvg.y);
+          item.branch.setAttribute("x2", cardSvg.x);
+          item.branch.setAttribute("y2", nodeSvg.y);
+
+          setupPath(item.branch);
+        });
+      }
+
+      function setupMainLines() {
+        const aboutTop = document.querySelector(".about-top");
+        const studyNode = document.querySelector(".cv-node.study");
+        const workNode = document.querySelector(".cv-node.work");
+        if (!aboutTop || !studyNode || !workNode) return;
+
+        const flowRect = aboutFlow.getBoundingClientRect();
+        const aboutTopRect = aboutTop.getBoundingClientRect();
+        const startY = ((aboutTopRect.bottom - flowRect.top) / flowRect.height) * 4300;
+
+        const studyRect = studyNode.getBoundingClientRect();
+        const workRect = workNode.getBoundingClientRect();
+
+        const studyX = svgCoordsFromViewport(studyRect.left + studyRect.width / 2, studyRect.top).x;
+        const workX = svgCoordsFromViewport(workRect.left + workRect.width / 2, workRect.top).x;
+
+        studyLine.setAttribute("x1", studyX);
+        studyLine.setAttribute("x2", studyX);
+        studyLine.setAttribute("y1", startY);
+
+        workLine.setAttribute("x1", workX);
+        workLine.setAttribute("x2", workX);
+        workLine.setAttribute("y1", startY);
+
+        if (ghostStudy) {
+          ghostStudy.setAttribute("x1", studyX);
+          ghostStudy.setAttribute("x2", studyX);
+          ghostStudy.setAttribute("y1", startY);
+          ghostStudy.style.visibility = "visible";
+        }
+
+        if (ghostWork) {
+          ghostWork.setAttribute("x1", workX);
+          ghostWork.setAttribute("x2", workX);
+          ghostWork.setAttribute("y1", startY);
+          ghostWork.style.visibility = "visible";
+        }
+
+        setupPath(studyLine);
+        setupPath(workLine);
+      }
+
+      function setNodeState(node, visible) {
+        node.style.opacity = visible ? "1" : "0";
+        node.style.transform = visible
+          ? "translate(-50%, -50%) scale(1)"
+          : "translate(-50%, -50%) scale(0.55)";
+      }
+
+      function updateTimeline() {
+        const rect = aboutFlow.getBoundingClientRect();
+        const vh = window.innerHeight;
+
+        const isTablet = window.innerWidth <= 900 && window.innerWidth > 640;
+        const start = isTablet ? vh * 0.5 : vh * 0.62;
+        const end = -rect.height * 0.72;
+
+        let progress = (start - rect.top) / (start - end);
+        progress = clamp(progress, 0, 1);
+
+        drawPath(studyLine, progress);
+        drawPath(workLine, progress);
+
+        let textFade = 1;
+        if (article) {
+          const articleRect = article.getBoundingClientRect();
+          const articleCenter = articleRect.top + articleRect.height / 2;
+          const distanceToViewportCenter = Math.abs((vh / 2) - articleCenter);
+          const maxDistance = vh * 0.55;
+          const proximity = 1 - clamp(distanceToViewportCenter / maxDistance, 0, 1);
+          textFade = 1 - proximity * 0.72;
+        }
+
+        const studyOpacity = clamp((0.06 + progress * 0.52) * textFade, 0.02, 0.65);
+        const workOpacity = clamp((0.05 + progress * 0.46) * textFade, 0.02, 0.58);
+
+        studyLine.style.opacity = studyOpacity.toFixed(3);
+        workLine.style.opacity = workOpacity.toFixed(3);
+
+        items.forEach(item => {
+          if (!item.node || !item.card || !item.branch) return;
+
+          const lineStartY = Number(item.line.getAttribute("y1")) || 0;
+          const lineEndY = Number(item.line.getAttribute("y2")) || 3800;
+          const lineCurrentY = lineStartY + (lineEndY - lineStartY) * progress;
+
+          const lineReachedNode = lineCurrentY >= item.nodeSvgY;
+          const overshoot = lineCurrentY - item.nodeSvgY;
+
+          const branchSpeed = Math.max(item.branchLength || 120, 120);
+          const branchProgress = lineReachedNode
+            ? clamp(overshoot / branchSpeed, 0, 1)
+            : 0;
+
+          const cardThreshold = 0.92;
+
+          setNodeState(item.node, lineReachedNode);
+
+          drawPath(item.branch, branchProgress);
+          item.branch.style.opacity = branchProgress > 0.01 ? "0.6" : "0";
+
+          if (branchProgress >= cardThreshold) {
+            item.card.classList.add("visible");
+          } else {
+            item.card.classList.remove("visible");
+          }
+        });
+      }
+
+      function requestTimelineUpdate() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateTimeline();
+          ticking = false;
+        });
+      }
+
+      function refreshAll() {
+        updateBranchGeometry();
+        setupMainLines();
+        updateTimeline();
+      }
+
+      window.addEventListener("scroll", requestTimelineUpdate, { passive: true });
+      window.addEventListener("resize", refreshAll);
+      window.addEventListener("DOMContentLoaded", refreshAll);
+      window.addEventListener("load", refreshAll);
+
+      refreshAll();
+    }
+  </script>
+</body>
+</html>
